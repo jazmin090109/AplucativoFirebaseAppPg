@@ -1,0 +1,16 @@
+# Settings to manage and configure a Firebase App Hosting backend for the QA environment.
+run:
+  build:
+    - npm install
+    - npm run build
+  start: npm start
+
+# Environment variables for the QA environment
+env:
+  - variable: API_BASE_URL
+    value: "https://apipgprod.creciendo.com.mx/api/AppPG/"
+  - variable: AUTH_SECRET
+    value: "1KOFm44lmls/j9GJPb4+UWtsgCBbphV5xOCgdhXmYAA="
+
+runConfig:
+  maxInstances: 1
