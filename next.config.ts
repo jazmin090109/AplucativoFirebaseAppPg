@@ -33,6 +33,10 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
+      allowedOrigins: [
+        "zbc4cqdq-3000.usw3.devtunnels.ms", // La URL que sale en tu error
+        "localhost:3000"
+      ],
       // five minutes
       bodySizeLimit: '5mb',
     },
