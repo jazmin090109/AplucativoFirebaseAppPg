@@ -165,8 +165,8 @@ export function ValeCreationForm({ onFormSuccess, onBack, existingClientData = n
   const isRenewedFlow = !!existingClientData;
 
   const loanAmounts = useMemo(() => {
-    const maxAmount = isRenewedFlow ? 8500 : 5000;
-    return Array.from({ length: (maxAmount - 4500) / 500 + 1 }, (_, i) => 4500 + i * 500);
+    const maxAmount = isRenewedFlow ? 9000 : 5500;
+    return Array.from({ length: (maxAmount - 5000) / 500 + 1 }, (_, i) => 5000 + i * 500);
   }, [isRenewedFlow]);
   
   
