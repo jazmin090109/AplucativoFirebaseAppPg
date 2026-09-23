@@ -72,7 +72,7 @@ type State = {
 };
 const initialState: State = { message: '', errors: {}, folio: undefined };
 
-const plazosPermitidos = [8, 10, 12, 14];
+const plazosPermitidos = [8, 10, 12];
 
 export function ValeCreationForm({ onFormSuccess, onBack, existingClientData = null }: ValeFormProps) {
   const [state, formAction] = useActionState(createVale, initialState);
