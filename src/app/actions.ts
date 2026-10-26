@@ -368,7 +368,7 @@ export async function cancelVale(prevState: any, formData: FormData) {
         };
     }
 
-    try {
+    /* try {
         const deleted = await deleteValeByFolio(folio);
         if (deleted) {
             revalidatePath('/');
@@ -381,6 +381,34 @@ export async function cancelVale(prevState: any, formData: FormData) {
     } catch (error) {
         console.error('Error cancelling vale:', error);
         return { success: false, message: 'Ocurrió un error al cancelar el vale.' };
+    } */
+   try {
+        const result = await deleteValeByFolio(folio);
+
+        if (result.success) {
+            revalidatePath('/');
+            revalidatePath('/vales');
+            revalidatePath(`/vales/${folio}`); 
+            revalidatePath(`/sign/${folio}`);
+            
+            return { 
+                success: true, 
+                message: result.message || 'Vale cancelado exitosamente.' 
+            };
+        }
+
+        // Si la API regresó BadRequest (por ejemplo: está en estatus ACTIVO = 4), 
+        // aquí se entregará ese mensaje específico al frontend
+        return { 
+            success: false, 
+            message: result.message || 'No se pudo cancelar el vale.' 
+        };
+    } catch (error) {
+        console.error('Error cancelling vale:', error);
+        return { 
+            success: false, 
+            message: 'Ocurrió un error inesperado al cancelar el vale.' 
+        };
     }
 }
 

@@ -1,7 +1,7 @@
 
 import type { Vale, ExistingClient, NipResetOtp } from './types';
 
-const API_BASE_URL = process.env.API_BASE_URL;
+const API_BASE_URL = process.env.API_BASE_URL 
 
 export const findUserByAssociateNumber = async (associateNumber: string) => {
   try {
@@ -87,7 +87,7 @@ export const updateValeStatus = async (folio: string, status: 'PENDIENTE' | 'FIR
     }
 };
 
-export const deleteValeByFolio = async (folio: string): Promise<boolean> => {
+/* export const deleteValeByFolio = async (folio: string): Promise<boolean> => {
     try {
         const response = await fetch(`${API_BASE_URL}vales/${folio}`, {
             method: 'DELETE'
@@ -96,6 +96,94 @@ export const deleteValeByFolio = async (folio: string): Promise<boolean> => {
     } catch (error) {
         console.error(`Network error when deleting vale ${folio}:`, error);
         return false;
+    }
+}; */
+
+/* export interface DeleteValeResponse {
+    success: boolean;
+    message: string;
+}
+
+export const deleteValeByFolio = async (folio: string): Promise<DeleteValeResponse> => {
+    try {
+        const response = await fetch(`${API_BASE_URL}vales/${folio}`, {
+            method: 'DELETE',
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            return {
+                success: true,
+                message: data.message || `Vale con folio ${folio} eliminado correctamente.`,
+            };
+        } else {
+            return {
+                success: false,
+                message: data.message || `No se pudo eliminar el vale con folio ${folio}.`,
+            };
+        }
+    } catch (error) {
+        console.error(`Network error when deleting vale ${folio}:`, error);
+        return {
+            success: false,
+            message: 'Ocurrió un error de conexión al intentar cancelar el vale.',
+        };
+    }
+}; */
+
+export interface DeleteValeResponse {
+    success: boolean;
+    message: string;
+}
+
+export const deleteValeByFolio = async (folio: string): Promise<DeleteValeResponse> => {
+    try {
+        const url = `${API_BASE_URL}vales/${folio}`;
+        
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Accept': '*/*',
+                'Content-Type': 'application/json',
+            },
+            cache: 'no-store', //  Evita que Next.js guarde respuestas 400/404 en caché en IIS
+        });
+
+        // Leemos primero la respuesta en texto plano para evitar crashes de lectura JSON
+        const responseText = await response.text();
+        
+        let data: any = {};
+        try {
+            data = JSON.parse(responseText);
+        } catch {
+            console.warn('[DELETE VALE] La respuesta no es un JSON válido:', responseText);
+        }
+
+        if (response.ok) {
+            return {
+                success: true,
+                message: data?.message || data?.Message || `Vale con folio ${folio} eliminado correctamente.`,
+            };
+        } else {
+            // Extrae el mensaje dinámico del backend o usa la respuesta en texto
+            const errorMessage = 
+                data?.message || 
+                data?.Message || 
+                (typeof responseText === 'string' && responseText.length < 200 ? responseText : null) ||
+                `No se pudo eliminar el vale con folio ${folio}.`;
+
+            return {
+                success: false,
+                message: errorMessage,
+            };
+        }
+    } catch (error) {
+        console.error(`Error de red al cancelar el vale ${folio}:`, error);
+        return {
+            success: false,
+            message: 'Ocurrió un error de conexión al intentar cancelar el vale.',
+        };
     }
 };
 
